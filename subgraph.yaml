@@ -1,0 +1,62 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Contract
+    network: matic
+    source:
+      address: "0x01e5eb0a168b4c4bb202bf64a52398488a5c38c7"
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - CEOSet
+        - Delegated
+        - IceLevelTransfer
+        - InitialMinting
+        - LevelEdit
+        - MetaTransactionExecuted
+        - Proceed
+        - SupplyCheck
+        - TokenUpgrade
+        - UpgradeCancel
+        - UpgradeRequest
+        - UpgradeResolved
+        - WorkerAdded
+        - WorkerRemoved
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: CEOSet(address)
+          handler: handleCEOSet
+        - event: Delegated(uint256,indexed address,indexed address,uint256,indexed address)
+          handler: handleDelegated
+        - event: IceLevelTransfer(address,indexed address,indexed address,indexed uint256)
+          handler: handleIceLevelTransfer
+        - event: InitialMinting(indexed uint256,indexed uint256,indexed address)
+          handler: handleInitialMinting
+        - event: LevelEdit(indexed uint256,uint256,uint256,uint256,uint256,bool)
+          handler: handleLevelEdit
+        - event: MetaTransactionExecuted(address,address,bytes)
+          handler: handleMetaTransactionExecuted
+        - event: Proceed(indexed uint256,indexed address)
+          handler: handleProceed
+        - event: SupplyCheck(string,uint256,uint256,indexed address,indexed string,indexed string)
+          handler: handleSupplyCheck
+        - event: TokenUpgrade(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleTokenUpgrade
+        - event: UpgradeCancel(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleUpgradeCancel
+        - event: UpgradeRequest(indexed uint256,uint256,address,address,indexed uint256,indexed uint256)
+          handler: handleUpgradeRequest
+        - event: UpgradeResolved(indexed address,indexed uint256)
+          handler: handleUpgradeResolved
+        - event: WorkerAdded(address)
+          handler: handleWorkerAdded
+        - event: WorkerRemoved(address)
+          handler: handleWorkerRemoved
+      file: ./src/mapping.ts
