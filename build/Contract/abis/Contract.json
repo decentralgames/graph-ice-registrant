@@ -417,19 +417,6 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "accessoriesContract",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -583,19 +570,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newAccessoriesContract",
-        "type": "address"
-      }
-    ],
-    "name": "changeAccessoriesDG",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "_newDepositAddressDG",
         "type": "address"
       }
@@ -696,12 +670,12 @@
         "type": "address"
       },
       {
-        "internalType": "bool",
-        "name": "_isActive",
-        "type": "bool"
+        "internalType": "address",
+        "name": "_accessoriesContract",
+        "type": "address"
       }
     ],
-    "name": "changeTarget",
+    "name": "changeTargetContract",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -715,6 +689,19 @@
       }
     ],
     "name": "changeTokenAddressDG",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newTokenAddressICE",
+        "type": "address"
+      }
+    ],
+    "name": "changeTokenAddressICE",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1013,6 +1000,11 @@
         "internalType": "uint256",
         "name": "_itemId",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_accessoriesContract",
+        "type": "address"
       }
     ],
     "name": "getSupply",
@@ -1200,6 +1192,11 @@
       {
         "internalType": "address",
         "name": "_minterAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
         "type": "address"
       }
     ],
@@ -1474,9 +1471,9 @@
     "name": "targets",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "address",
         "name": "",
-        "type": "bool"
+        "type": "address"
       }
     ],
     "stateMutability": "view",

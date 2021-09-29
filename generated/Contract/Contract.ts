@@ -505,29 +505,6 @@ export class Contract extends ethereum.SmartContract {
     return new Contract("Contract", address);
   }
 
-  accessoriesContract(): Address {
-    let result = super.call(
-      "accessoriesContract",
-      "accessoriesContract():(address)",
-      []
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_accessoriesContract(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "accessoriesContract",
-      "accessoriesContract():(address)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
   allowChangeSaleLimit(): boolean {
     let result = super.call(
       "allowChangeSaleLimit",
@@ -868,18 +845,31 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  getSupply(_itemId: BigInt): BigInt {
-    let result = super.call("getSupply", "getSupply(uint256):(uint256)", [
-      ethereum.Value.fromUnsignedBigInt(_itemId)
-    ]);
+  getSupply(_itemId: BigInt, _accessoriesContract: Address): BigInt {
+    let result = super.call(
+      "getSupply",
+      "getSupply(uint256,address):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(_itemId),
+        ethereum.Value.fromAddress(_accessoriesContract)
+      ]
+    );
 
     return result[0].toBigInt();
   }
 
-  try_getSupply(_itemId: BigInt): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("getSupply", "getSupply(uint256):(uint256)", [
-      ethereum.Value.fromUnsignedBigInt(_itemId)
-    ]);
+  try_getSupply(
+    _itemId: BigInt,
+    _accessoriesContract: Address
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getSupply",
+      "getSupply(uint256,address):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(_itemId),
+        ethereum.Value.fromAddress(_accessoriesContract)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1184,23 +1174,23 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  targets(param0: Address): boolean {
-    let result = super.call("targets", "targets(address):(bool)", [
+  targets(param0: Address): Address {
+    let result = super.call("targets", "targets(address):(address)", [
       ethereum.Value.fromAddress(param0)
     ]);
 
-    return result[0].toBoolean();
+    return result[0].toAddress();
   }
 
-  try_targets(param0: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall("targets", "targets(address):(bool)", [
+  try_targets(param0: Address): ethereum.CallResult<Address> {
+    let result = super.tryCall("targets", "targets(address):(address)", [
       ethereum.Value.fromAddress(param0)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   tokenAddressDG(): Address {
@@ -1512,36 +1502,6 @@ export class CancelUpgradeCall__Outputs {
   }
 }
 
-export class ChangeAccessoriesDGCall extends ethereum.Call {
-  get inputs(): ChangeAccessoriesDGCall__Inputs {
-    return new ChangeAccessoriesDGCall__Inputs(this);
-  }
-
-  get outputs(): ChangeAccessoriesDGCall__Outputs {
-    return new ChangeAccessoriesDGCall__Outputs(this);
-  }
-}
-
-export class ChangeAccessoriesDGCall__Inputs {
-  _call: ChangeAccessoriesDGCall;
-
-  constructor(call: ChangeAccessoriesDGCall) {
-    this._call = call;
-  }
-
-  get _newAccessoriesContract(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class ChangeAccessoriesDGCall__Outputs {
-  _call: ChangeAccessoriesDGCall;
-
-  constructor(call: ChangeAccessoriesDGCall) {
-    this._call = call;
-  }
-}
-
 export class ChangeDepositAddressDGCall extends ethereum.Call {
   get inputs(): ChangeDepositAddressDGCall__Inputs {
     return new ChangeDepositAddressDGCall__Inputs(this);
@@ -1756,20 +1716,20 @@ export class ChangeSaleLimitCall__Outputs {
   }
 }
 
-export class ChangeTargetCall extends ethereum.Call {
-  get inputs(): ChangeTargetCall__Inputs {
-    return new ChangeTargetCall__Inputs(this);
+export class ChangeTargetContractCall extends ethereum.Call {
+  get inputs(): ChangeTargetContractCall__Inputs {
+    return new ChangeTargetContractCall__Inputs(this);
   }
 
-  get outputs(): ChangeTargetCall__Outputs {
-    return new ChangeTargetCall__Outputs(this);
+  get outputs(): ChangeTargetContractCall__Outputs {
+    return new ChangeTargetContractCall__Outputs(this);
   }
 }
 
-export class ChangeTargetCall__Inputs {
-  _call: ChangeTargetCall;
+export class ChangeTargetContractCall__Inputs {
+  _call: ChangeTargetContractCall;
 
-  constructor(call: ChangeTargetCall) {
+  constructor(call: ChangeTargetContractCall) {
     this._call = call;
   }
 
@@ -1777,15 +1737,15 @@ export class ChangeTargetCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get _isActive(): boolean {
-    return this._call.inputValues[1].value.toBoolean();
+  get _accessoriesContract(): Address {
+    return this._call.inputValues[1].value.toAddress();
   }
 }
 
-export class ChangeTargetCall__Outputs {
-  _call: ChangeTargetCall;
+export class ChangeTargetContractCall__Outputs {
+  _call: ChangeTargetContractCall;
 
-  constructor(call: ChangeTargetCall) {
+  constructor(call: ChangeTargetContractCall) {
     this._call = call;
   }
 }
@@ -1816,6 +1776,36 @@ export class ChangeTokenAddressDGCall__Outputs {
   _call: ChangeTokenAddressDGCall;
 
   constructor(call: ChangeTokenAddressDGCall) {
+    this._call = call;
+  }
+}
+
+export class ChangeTokenAddressICECall extends ethereum.Call {
+  get inputs(): ChangeTokenAddressICECall__Inputs {
+    return new ChangeTokenAddressICECall__Inputs(this);
+  }
+
+  get outputs(): ChangeTokenAddressICECall__Outputs {
+    return new ChangeTokenAddressICECall__Outputs(this);
+  }
+}
+
+export class ChangeTokenAddressICECall__Inputs {
+  _call: ChangeTokenAddressICECall;
+
+  constructor(call: ChangeTokenAddressICECall) {
+    this._call = call;
+  }
+
+  get _newTokenAddressICE(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class ChangeTokenAddressICECall__Outputs {
+  _call: ChangeTokenAddressICECall;
+
+  constructor(call: ChangeTokenAddressICECall) {
     this._call = call;
   }
 }
@@ -1958,6 +1948,10 @@ export class GetSupplyCall__Inputs {
   get _itemId(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
+
+  get _accessoriesContract(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
 }
 
 export class GetSupplyCall__Outputs {
@@ -2053,6 +2047,10 @@ export class MintTokenCall__Inputs {
 
   get _minterAddress(): Address {
     return this._call.inputValues[1].value.toAddress();
+  }
+
+  get _tokenAddress(): Address {
+    return this._call.inputValues[2].value.toAddress();
   }
 }
 
