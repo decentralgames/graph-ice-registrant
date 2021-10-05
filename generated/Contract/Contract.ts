@@ -139,15 +139,15 @@ export class LevelEdit__Params {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get iceCostAmount(): BigInt {
+  get dgMoveAmount(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
-  get dgReRollAmount(): BigInt {
+  get iceCostAmount(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
 
-  get iceReRollAmount(): BigInt {
+  get iceMoveAmount(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
 
@@ -179,28 +179,6 @@ export class MetaTransactionExecuted__Params {
 
   get functionSignature(): Bytes {
     return this._event.parameters[2].value.toBytes();
-  }
-}
-
-export class Proceed extends ethereum.Event {
-  get params(): Proceed__Params {
-    return new Proceed__Params(this);
-  }
-}
-
-export class Proceed__Params {
-  _event: Proceed;
-
-  constructor(event: Proceed) {
-    this._event = event;
-  }
-
-  get itemId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get minterAddress(): Address {
-    return this._event.parameters[1].value.toAddress();
   }
 }
 
@@ -239,36 +217,6 @@ export class SupplyCheck__Params {
 
   get contentHash(): Bytes {
     return this._event.parameters[5].value.toBytes();
-  }
-}
-
-export class TokenUpgrade extends ethereum.Event {
-  get params(): TokenUpgrade__Params {
-    return new TokenUpgrade__Params(this);
-  }
-}
-
-export class TokenUpgrade__Params {
-  _event: TokenUpgrade;
-
-  constructor(event: TokenUpgrade) {
-    this._event = event;
-  }
-
-  get tokenOwner(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get tokenAddress(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-
-  get upgradeLevel(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -802,6 +750,25 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  getNonce(_user: Address): BigInt {
+    let result = super.call("getNonce", "getNonce(address):(uint256)", [
+      ethereum.Value.fromAddress(_user)
+    ]);
+
+    return result[0].toBigInt();
+  }
+
+  try_getNonce(_user: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("getNonce", "getNonce(address):(uint256)", [
+      ethereum.Value.fromAddress(_user)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   getNumber(
     _floorValue: BigInt,
     _deltaValue: BigInt,
@@ -1008,6 +975,25 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  owners(param0: Bytes): Address {
+    let result = super.call("owners", "owners(bytes32):(address)", [
+      ethereum.Value.fromFixedBytes(param0)
+    ]);
+
+    return result[0].toAddress();
+  }
+
+  try_owners(param0: Bytes): ethereum.CallResult<Address> {
+    let result = super.tryCall("owners", "owners(bytes32):(address)", [
+      ethereum.Value.fromFixedBytes(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   paymentToken(): Address {
@@ -2296,36 +2282,6 @@ export class SetCEOCall__Outputs {
   _call: SetCEOCall;
 
   constructor(call: SetCEOCall) {
-    this._call = call;
-  }
-}
-
-export class TriggerEventCall extends ethereum.Call {
-  get inputs(): TriggerEventCall__Inputs {
-    return new TriggerEventCall__Inputs(this);
-  }
-
-  get outputs(): TriggerEventCall__Outputs {
-    return new TriggerEventCall__Outputs(this);
-  }
-}
-
-export class TriggerEventCall__Inputs {
-  _call: TriggerEventCall;
-
-  constructor(call: TriggerEventCall) {
-    this._call = call;
-  }
-
-  get _itemId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class TriggerEventCall__Outputs {
-  _call: TriggerEventCall;
-
-  constructor(call: TriggerEventCall) {
     this._call = call;
   }
 }
